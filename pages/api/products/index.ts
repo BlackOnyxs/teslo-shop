@@ -32,7 +32,7 @@ const getProducts = async(req: NextApiRequest, res: NextApiResponse<Data>)  => {
     try {
         await db.connect();
         const products = await Product.find(condition)
-                                    .select(['title', 'price', 'inStock', 'slog', 'images', '-_id'])
+                                    .select(['title', 'price', 'inStock', 'slug', 'images', '-_id'])
                                     .lean();
         await db.connect();
         return res.status(200).json(products);
