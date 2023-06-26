@@ -4,7 +4,7 @@ import { IProduct } from '../interfaces';
 const prodcutSchema = new Schema({
     description: { type: String, require: true },
     images: [{ type: String }],
-    inStock: [{ type: Number, require: true, default: 0 }],
+    inStock: { type: Number, require: true, default: 0 },
     price: { type: Number, require: true, default: 0 },
     sizes: [{
         type: String,
