@@ -17,7 +17,7 @@ interface FormData {
   
   
 const LoginPage = () => {
-    const { replace } = useRouter();
+    const { replace, query } = useRouter();
     const { loginUser } = useContext( AuthContext );
     const { register, handleSubmit, formState: { errors }} = useForm<FormData>();
     const [showError, setShowError] = useState(false);
@@ -32,7 +32,8 @@ const LoginPage = () => {
             setTimeout(() => setShowError(false), 3000);
             return;
         }
-        replace('/')
+        const destination = query.p?.toString() || '/';
+        replace( destination )
     }
     
     return (
@@ -95,7 +96,12 @@ const LoginPage = () => {
                             </Button>
                         </Grid>   
                         <Grid item xs={ 12 } display='flex' justifyContent='end'>
-                            <NextLink href='/auth/register' passHref legacyBehavior>
+                            <NextLink 
+                                href={query.p ?`/auth/register?p=${query.p}` : '/auth/register'}
+                                passHref 
+                                legacyBehavior
+                                
+                            >
                                 <Link underline='always'>
                                     ¿No tienes cuenta?
                                 </Link>
