@@ -1,6 +1,6 @@
 export interface ShippingAddress {
     firstName: string;
-    lastname: string;
+    lastName: string;
     address: string;
     address2?: string;
     zip: string;

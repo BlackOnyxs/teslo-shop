@@ -1,12 +1,18 @@
 import { NextPage } from 'next';
+import { useSession } from 'next-auth/react';
+
 import { Typography } from '@mui/material';
+
 import { ShopLayout } from '../components/layouts';
 import { ProductList } from '../components/products';
-import { useProducts } from '../hooks';
 import { FullScreenLoading } from '../components/ui';
+import { useProducts } from '../hooks';
 
 
 const Home:NextPage = () => {
+
+  
+
   const { products, isLoading } = useProducts('/products');
   return (
     <ShopLayout title={'Teslo-Shop - Home'} pageDescription={'Encuetra los mejores productos de Teslo aquí'}>
