@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import { countries } from '../../utils/';
 import { useForm } from 'react-hook-form';
 import { ShippingAddress } from '@/interfaces';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CartContext } from '@/context';
 
 
@@ -15,7 +15,7 @@ import { CartContext } from '@/context';
 const getAddressFromCookies = (): ShippingAddress => {
     return {
         firstName: Cookies.get('firstName') || '',
-        lastname : Cookies.get('lastname') || '',
+        lastName : Cookies.get('lastName') || '',
         address  : Cookies.get('address') || '',
         address2 : Cookies.get('address2') || '',
         zip      : Cookies.get('zip') || '',
@@ -29,13 +29,25 @@ const AddressPage = () => {
     const { push } = useRouter();
     const { updateAddress } = useContext( CartContext );
 
-    const { register, handleSubmit, formState: { errors } } = useForm<ShippingAddress>({
-        defaultValues: getAddressFromCookies()
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<ShippingAddress>({
+        defaultValues: {
+            firstName: '',
+            lastName: '',
+            address: '',
+            address2: '',
+            zip: '',
+            city: '',
+            country: countries[0].code,
+            phone: '',
+        }
     });
 
-    const onSaveAddress = (data: ShippingAddress) => {
-        
+    useEffect(() => {
+        reset(getAddressFromCookies() );
 
+    }, [reset])
+
+    const onSaveAddress = (data: ShippingAddress) => {
         updateAddress( data );
         push('/checkout/summary');
     }
@@ -64,12 +76,12 @@ const AddressPage = () => {
                             label='Apellidos'
                             variant='filled'
                             fullWidth
-                            {...register('lastname', {
+                            {...register('lastName', {
                                 required: 'Este campo es requerido',
                                 minLength: { value: 3, message: 'El apellido debe ser mayor a 6 caracteres' }
                             })}
-                            error={!!errors.lastname}
-                            helperText={errors.lastname?.message}
+                            error={!!errors.lastName}
+                            helperText={errors.lastName?.message}
                         />
                     </Grid>
 
@@ -126,30 +138,31 @@ const AddressPage = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <Select
-                                variant="filled"
-                                label="País"
-                                defaultValue={Cookies.get('country') || countries[0].code}
-                                {...register('country', {
-                                    required: 'Este campo es requerido',
-                                    validate: (value) => countries.some(c => c.code === value)
-                                })}
-                            >
-                                {
-                                    countries.map(({ code, name }) => (
-                                        <MenuItem
-                                            key={code}
-                                            value={code}
-                                        >
-                                            {name}
-                                        </MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                    </Grid>
+                    <Grid item xs={12} sm={ 6 }>
+                    {/* <FormControl fullWidth> */}
+                        <TextField
+                            // select
+                            variant="filled"
+                            label="País"
+                            fullWidth
+                            // defaultValue={ Cookies.get('country') || countries[0].code }
+                            { ...register('country', {
+                                required: 'Este campo es requerido'
+                            })}
+                            error={ !!errors.country }
+                            helperText={ errors.country?.message }
+                        />
+                            {/* {
+                                countries.map( country => (
+                                    <MenuItem 
+                                        key={ country.code }
+                                        value={ country.code }
+                                    >{ country.name }</MenuItem>
+                                ))
+                            }
+                        </TextField> */}
+                    {/* </FormControl> */}
+                </Grid>
 
                     <Grid item xs={12} sm={6}>
                         <TextField
