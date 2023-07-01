@@ -1,7 +1,9 @@
 import { FC, PropsWithChildren, useEffect, useReducer, useState } from 'react';
 import { CartContext, cartReducer } from './';
-import { ICartProduct, ShippingAddress } from '../../interfaces';
+import { ICartProduct, IOrder, ShippingAddress } from '../../interfaces';
 import Cookies from 'js-cookie';
+import { tesloApi } from '@/api';
+import axios from 'axios';
 
 export interface CartState {
     isLoaded: boolean;
@@ -64,7 +66,7 @@ export const CartProvider:FC<PropsWithChildren> = ({ children }) => {
         if ( Cookies.get('firstName') ) {
             const shippingAddress: ShippingAddress = {
                 firstName: Cookies.get('firstName') || '',
-                lastname : Cookies.get('lastname') || '',
+                lastName : Cookies.get('lastName') || '',
                 address  : Cookies.get('address') || '',
                 address2 : Cookies.get('address2') || '',
                 zip      : Cookies.get('zip') || '',
@@ -102,7 +104,7 @@ export const CartProvider:FC<PropsWithChildren> = ({ children }) => {
 
     const updateAddress = ( address: ShippingAddress ) => {
         Cookies.set('firstName', address.firstName),
-        Cookies.set('lastname', address.lastname),
+        Cookies.set('lastname', address.lastName),
         Cookies.set('address', address.address),
         Cookies.set('address2', address.address2 || ''),
         Cookies.set('zip', address.zip),
@@ -112,14 +114,59 @@ export const CartProvider:FC<PropsWithChildren> = ({ children }) => {
         dispatch({ type: '[Cart] - Update Address from Cookies', payload: address });
     }
 
+
+    const createOrder = async(): Promise<{ hasError: boolean, message: string}> => {
+
+        if ( !state.shippingAddress ) {
+            throw new Error('No hay dirección de entrega');
+        }
+
+        const body: IOrder = {
+            orderItems: state.cart.map( p => ({
+                ...p,
+                size: p.size!
+            })),
+            shippingAddress: state.shippingAddress,
+            numberOfItems: state.numberOfItems,
+            subTotal: state.subTotal,
+            tax: state.tax,
+            total: state.total,
+            isPaid: false
+        }
+
+        try {
+            
+            const { data } = await tesloApi.post('/orders', body);
+            Cookies.remove('cart');
+            dispatch({ type: '[Cart] - Order Completed'});
+
+            return {
+                hasError: false,
+                message: data._id
+            }
+
+        } catch (error) {
+            if ( axios.isAxiosError(error) ) {
+                return {
+                    hasError: true,
+                    message: error.response?.data.message
+                }
+            }
+            return {
+                hasError: true,
+                message: 'Error no contralado. Hable con el administrador.'
+            }
+        }
+    }
+
     return (
         <CartContext.Provider value={{
             ...state,
             addProduct,
             updateCartQuantity,
             removeCartProduct,
-
             updateAddress,
+            createOrder,
         }}>
             { children }
         </CartContext.Provider>

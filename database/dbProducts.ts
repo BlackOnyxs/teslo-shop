@@ -6,7 +6,7 @@ import { Product } from '../models';
 export const getProductBySlug = async( slug: string ): Promise<IProduct | null> => {
     await db.connect()
     const product = await Product.findOne({ slug });
-    console.log(product)
+    // console.log(product)
     await db.disconnect();
 
     if ( !product ) {
