@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     maxAge: 86400, //1d
-    strategy: 'jwt',
+    strategy: 'jwt' as const,
     updateAge: 86400,
   },
   
@@ -43,14 +43,14 @@ export const authOptions: NextAuthOptions = {
             break;
         
           case 'oauth':
-              token.user = await dbUsers.oAuthToDbUser(user?.email || '', user?.name || '');
+              token.user = await dbUsers.oAuthToDbUser(user!.email || '', user?.name || '');
             break;
         }
       }
       return token;
     },
     async session({ session, token, user }) {
-      session.accessToken = token.accessToken;
+      session.accessToken = token.accessToken as any;
       session.user = token.user as any;
       return session;
     }

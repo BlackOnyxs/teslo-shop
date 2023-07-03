@@ -4,11 +4,13 @@ import { getToken } from 'next-auth/jwt';
  
 export async function middleware(req: NextRequest) {
   
-  const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
+  const session: any = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const requestedPage = req.nextUrl.pathname;
+  const validRoles = ['admin'];
+  const url = req.nextUrl.clone();
   if ( !session ) {
-    const requestedPage = req.nextUrl.pathname;
-    const url = req.nextUrl.clone();
+    
+    
 
     url.pathname = '/auth/login';
     url.search = `p=${ requestedPage }`;
@@ -16,9 +18,19 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect( url );
   }
 
-  return NextResponse.next(0);
+  if ( requestedPage.startsWith('/admin' ) && !validRoles.includes( session.user.role ) ) {
+    url.pathname = '/'
+    return NextResponse.redirect( url );
+  }
+
+  if ( requestedPage.startsWith('/api/admin') && !validRoles.includes( session.user.role ) ){
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  };
+
+
+  return NextResponse.next();
 }
  
 export const config = {
-  matcher: ["/checkout/:path*"],
+  matcher: ['/checkout/:path*', '/admin/:path*', '/api/admin/:path*' ],
 };
