@@ -17,12 +17,11 @@ export const ProductSlideshow:FC<Props> = ({ images }) => {
     >
         {
             images.map( img => {
-                const url = `/products/${img }`
                 return (
                     <div className={ styles['each-slice'] } key={ img }>
                         <div
                             style={{
-                                backgroundImage: `url(${url})`,
+                                backgroundImage: `url(${img})`,
                                 backgroundSize: 'cover'
                             }}
                         >
