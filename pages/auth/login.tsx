@@ -3,8 +3,16 @@ import { GetServerSideProps } from 'next'
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import { Box, Button, Chip, Divider, Grid, IconButton, Link, TextField, Typography } from '@mui/material';
-import { ErrorOutline, GitHub } from '@mui/icons-material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+
+import GitHub from '@mui/icons-material/GitHub';
+
 import { useForm } from 'react-hook-form';
 
 import { AuthLayout } from '../../components/layouts';
@@ -55,13 +63,13 @@ const LoginPage = () => {
                         <Grid item xs={ 12 }>
                             <Typography>Iniciar Sesión</Typography>
 
-                            <Chip 
-                                label='No reconocemos ese usuario / contraseña'
+                            <Typography 
                                 color='error'
-                                icon={ <ErrorOutline /> }
                                 className='fadeIn'
                                 sx={{ display: showError ? 'flex' : 'none' }}
-                            />
+                            >
+                                No reconocemos ese usuario / contraseña
+                            </Typography>
                         </Grid>
                         
                         <Grid item xs={ 12 }>
