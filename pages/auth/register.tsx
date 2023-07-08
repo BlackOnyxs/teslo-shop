@@ -7,8 +7,12 @@ import NextLink from 'next/link';
 import { getSession, signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
-import { ErrorOutline } from '@mui/icons-material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import { AuthContext } from '../../context/auth';
 import { AuthLayout } from '../../components/layouts';
@@ -53,13 +57,13 @@ const RegisterPage = () => {
                     <Grid container spacing={ 2 }>
                         <Grid item xs={ 12 }>
                             <Typography>Crear Cuenta</Typography>
-                            <Chip 
-                                label={ errorMessage }
+                            <Typography 
                                 color='error'
-                                icon={ <ErrorOutline /> }
                                 className='fadeIn'
                                 sx={{ display: showError ? 'flex' : 'none' }}
-                            />
+                            >
+                                { errorMessage }
+                            </Typography>
                         </Grid>
                         
                         <Grid item xs={ 12 }>
