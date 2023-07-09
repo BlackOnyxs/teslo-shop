@@ -5,7 +5,7 @@ import { IOrder } from '@/interfaces';
 import { Order } from '@/models';
 
 export const getOrderById = async (id: string ): Promise<IOrder | null> => {
-    
+
     if ( !isValidObjectId(id) ){
         return null;
     }
