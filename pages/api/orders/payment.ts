@@ -33,7 +33,7 @@ const getPaypalBearerToken = async(): Promise<string | null> => {
         const { data } = await axios.post(process.env.PAYPAL_OAUTH_URL|| '', body, {
             headers: {
                 'Authorization': `Basic ${base64Token}`,
-                'Content-Type': 'application/x-www-form-url-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
         return data.access_token;
