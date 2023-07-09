@@ -176,7 +176,7 @@ const OrderPage: NextPage<Props> = ({
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
 
-    const { id = '' } = query as { id: string };
+    const { id = '' } = query;
 
     const session: any = await getServerSession(req, res, authOptions);
 
@@ -189,7 +189,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
         }
     }
 
-    const order = await dbOrders.getOrderById(id);
+    const order = await dbOrders.getOrderById(id.toString() );
 
     if (!order) {
         return {
@@ -200,7 +200,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
         }
     }
 
-    if (order.user !== session.user._id) {
+    if (order.user !== session.user.id) {
         return {
             redirect: {
                 destination: '/orders/history',
